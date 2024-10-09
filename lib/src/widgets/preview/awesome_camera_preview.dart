@@ -219,6 +219,16 @@ class AwesomeCameraPreviewState extends State<AwesomeCameraPreview> {
               // TODO: be draggable
               // TODO: add shadow & border
               ..._buildPreviewTextures(),
+              // red box into bottom right corner, 50x50
+              Positioned(
+                right: 10,
+                bottom: 10,
+                child: Container(
+                  width: 50,
+                  height: 50,
+                  color: Colors.red,
+                ),
+              )
             ],
           );
         },
