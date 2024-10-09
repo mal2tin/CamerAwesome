@@ -159,6 +159,67 @@ class AwesomeCameraPreviewState extends State<AwesomeCameraPreview> {
         builder: (context, constraints) {
           return Stack(
             children: [
+              Positioned.fill(
+                child: AnimatedPreviewFit(
+                  previewFit: widget.previewFit,
+                  previewSize: _previewSize!,
+                  constraints: constraints,
+                  sensor: widget.state.sensorConfig.sensors.first,
+                  onPreviewCalculated: (preview) {
+                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                      if (mounted) {
+                        setState(() {
+                          _preview = preview;
+                        });
+                      }
+                    });
+                  },
+                  child: AwesomeCameraGestureDetector(
+                    onPreviewTapBuilder:
+                        widget.onPreviewTap != null && _previewSize != null
+                            ? OnPreviewTapBuilder(
+                                pixelPreviewSizeGetter: () => _previewSize!,
+                                flutterPreviewSizeGetter: () =>
+                                    _previewSize!, //croppedPreviewSize,
+                                onPreviewTap: widget.onPreviewTap!,
+                              )
+                            : null,
+                    onPreviewScale: widget.onPreviewScale,
+                    initialZoom: widget.state.sensorConfig.zoom,
+                    child: StreamBuilder<AwesomeFilter>(
+                      //FIX performances
+                      stream: widget.state.filter$,
+                      builder: (context, snapshot) {
+                        return snapshot.hasData &&
+                                snapshot.data != AwesomeFilter.None
+                            ? ColorFiltered(
+                                colorFilter: snapshot.data!.preview,
+                                child: _textures.first,
+                              )
+                            : _textures.first;
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              if (widget.previewDecoratorBuilder != null && _preview != null)
+                Positioned.fill(
+                  child: widget.previewDecoratorBuilder!(
+                    widget.state,
+                    _preview!,
+                  ),
+                ),
+              if (_preview != null)
+                Positioned.fill(
+                  child: widget.interfaceBuilder(
+                    widget.state,
+                    _preview!,
+                  ),
+                ),
+              // TODO: be draggable
+              // TODO: add shadow & border
+              ..._buildPreviewTextures(),
+              // red box into bottom right corner, 50x50
               Positioned(
                 right: 10,
                 bottom: 10,
