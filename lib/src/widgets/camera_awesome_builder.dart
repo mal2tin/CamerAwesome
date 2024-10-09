@@ -230,7 +230,6 @@ class CameraAwesomeBuilder extends StatefulWidget {
     Alignment previewAlignment = Alignment.center,
     PictureInPictureConfigBuilder? pictureInPictureConfigBuilder,
     List<AwesomeFilter>? filters,
-    Widget Function(CameraState, Preview)? previewDecoratorBuilder,
   }) : this._(
           sensorConfig: sensorConfig ??
               SensorConfig.single(
@@ -247,7 +246,7 @@ class CameraAwesomeBuilder extends StatefulWidget {
           onPreviewTapBuilder: onPreviewTapBuilder,
           onPreviewScaleBuilder: onPreviewScaleBuilder,
           previewFit: previewFit ?? CameraPreviewFit.cover,
-          previewDecoratorBuilder: previewDecoratorBuilder,
+          previewDecoratorBuilder: null,
           theme: theme ?? AwesomeTheme(),
           previewPadding: previewPadding,
           previewAlignment: previewAlignment,
